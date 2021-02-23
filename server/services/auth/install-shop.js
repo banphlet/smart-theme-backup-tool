@@ -4,7 +4,7 @@ import joi from '../../lib/joi'
 import { validate } from '../../lib/utils'
 import { Platforms, StoreStatusTypes } from '../../models/shops/schema'
 import platforms from '../platforms'
-import { shops as shopModel } from '../../models'
+import { shops as shopModel, themes as themeModel } from '../../models'
 
 const schema = joi.object({
   code: joi.string().required(),
@@ -43,6 +43,14 @@ export default async function installShop (payload) {
       status: StoreStatusTypes.ACTIVE
     }
   )
+
+  const themes = await platforms(validated.platform).getThemes({
+    accessToken: tokens.accessToken,
+    platformDomain: shopDetails.platformDomain,
+    shopId: shop.id
+  })
+
+  await themeModel().upsertMultiple(themes)
 
   await platforms(validated.platform).installWebhooks({
     accessToken: tokens.accessToken,

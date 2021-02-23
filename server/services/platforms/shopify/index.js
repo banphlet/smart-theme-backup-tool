@@ -59,28 +59,6 @@ const getSiteDetails = ({
       externalId: shopDetails.id
     }))
 
-const insertSnippetIntoCurrentLiquid = (value = '') => {
-  const snippet = "{% render 'limit-login.liquid', form: form %}"
-  const match = value.match(/customer_login.*}/)
-  if (!match) return value
-  const indexAfterFormTag = match.index + match[0].length
-  return (
-    value.slice(0, indexAfterFormTag) + snippet + value.slice(indexAfterFormTag)
-  )
-}
-const loadScript = async shopId => {
-  const script = await request(
-    `${config.get('NEXT_PUBLIC_APP_URL')}/script.liquid`,
-    {
-      responseType: 'text',
-      rejectUnauthorized: false
-    }
-  ).then(response => response.body)
-  return script
-    .replace(/SHOP_ID/g, shopId)
-    .replace(/NEXT_PUBLIC_APP_URL/g, config.get('NEXT_PUBLIC_APP_URL'))
-}
-
 const installWebhooks = ({
   accessToken = required('accessToken'),
   platformDomain = required('platformDomain')
@@ -93,11 +71,11 @@ const installWebhooks = ({
     },
     {
       address: `${config.get('NEXT_PUBLIC_APP_URL')}}/api/shops/theme`,
-      topic: ' themes/publish'
+      topic: 'themes/publish'
     },
     {
       address: `${config.get('NEXT_PUBLIC_APP_URL')}}/api/shops/theme`,
-      topic: ' themes/update'
+      topic: 'themes/update'
     }
   ]
   return Promise.all(
@@ -141,7 +119,26 @@ const confirmCharge = ({
 
 const verifyHmac = shopifyToken.verifyHmac
 
+const getThemes = ({
+  accessToken = required('accessToken'),
+  platformDomain = required('platformDomain'),
+  shopId = required('shopId')
+}) =>
+  shopifyClient({
+    shop: platformDomain,
+    accessToken
+  })
+    .theme.list()
+    .then(themes =>
+      themes.map(theme => ({
+        external_theme_id: theme.id,
+        external_theme_name: theme.name,
+        shop: shopId
+      }))
+    )
+
 export {
+  getThemes,
   getPermissionUrl,
   getOauthAccessTokens,
   getSiteDetails,

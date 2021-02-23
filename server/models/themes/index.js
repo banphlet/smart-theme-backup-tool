@@ -5,7 +5,7 @@ import BaseModel from '../common/base-model'
 import { required } from '../../lib/utils'
 import { compact } from 'lodash'
 
-const Model = mongoose.models.Backup || mongoose.model('Theme', schema)
+const Model = mongoose.models.Theme || mongoose.model('Theme', schema)
 const ThemeModal = BaseModel(Model)
 
 const customErrorMessage = 'customer does not exist'
@@ -81,34 +81,18 @@ const createOrUpdate = ({
     }
   })
 
-const paginateByShopId = ({ shopId, page, limit = 20, sort, isBlocked }) => {
-  const aggregate = Model.aggregate([
-    {
-      $match: {
-        shop: new mongoose.Types.ObjectId(shopId),
-        ...(isBlocked && {
-          is_blocked: isBlocked
-        })
-      }
-    }
-  ])
-  const options = {
-    limit,
-    sort: sort ?? { _id: -1 },
-    page
-  }
-  return Model.aggregatePaginate(aggregate, options).then(
-    ({ docs, ...rest }) => {
-      return {
-        docs: docs.map(doc => {
-          doc.id = doc._id
-          return doc
-        }),
-        ...rest
-      }
-    }
+const upsertMultiple = (themes = []) =>
+  Promise.all(
+    themes.map(theme =>
+      ThemeModal.upsert({
+        query: {
+          shop: theme.shop,
+          external_theme_id: theme.external_theme_id
+        },
+        update: theme
+      })
+    )
   )
-}
 
 export default () => ({
   ...ThemeModal,
@@ -119,5 +103,5 @@ export default () => ({
   updateById,
   fetchByShopId,
   getBasedOnCriteria,
-  paginateByShopId
+  upsertMultiple
 })
