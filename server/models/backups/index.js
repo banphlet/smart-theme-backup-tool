@@ -148,6 +148,7 @@ const fetchByPrevious24HourRange = ({ shopId, themeId }) =>
 
 export default () => ({
   ...BackupModal,
+  upsertBaseOn24HourRange,
   fetchByPrevious24HourRange,
   createOrUpdate,
   create,
