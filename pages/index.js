@@ -1,11 +1,14 @@
 import React from 'react'
-import { Card } from '@shopify/polaris'
+import { Button, Card, EmptyState, List } from '@shopify/polaris'
 import { AppProvider, Frame } from '@shopify/polaris'
 import enTranslations from '@shopify/polaris/locales/en.json'
 import { Provider, useAppBridge } from '@shopify/app-bridge-react'
+import NoSubscribedChanges from '../Components/NosubscribedThemes'
 
 const Main = ({ shop }) => {
   const app = useAppBridge()
+
+  console.log(shop)
 
   // const showPlan = () => {
   //   const saveButton = Button.create(app, {
@@ -22,7 +25,7 @@ const Main = ({ shop }) => {
   return (
     <Frame>
       <div style={{ padding: 5 }}>
-        <Card>hello world</Card>
+        <NoSubscribedChanges themes={shop.themes} />
       </div>
     </Frame>
   )

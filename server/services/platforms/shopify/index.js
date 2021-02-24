@@ -4,7 +4,7 @@ import Shopify from 'shopify-api-node'
 import config from '../../../config'
 import { required } from '../../../lib/utils'
 import { Platforms } from '../../../models/shops/schema'
-import request from '../../../lib/request'
+import orderBy from 'lodash/orderBy'
 
 const API_VERSION = '2020-04'
 
@@ -130,11 +130,16 @@ const getThemes = ({
   })
     .theme.list()
     .then(themes =>
-      themes.map(theme => ({
-        external_theme_id: theme.id,
-        external_theme_name: theme.name,
-        shop: shopId
-      }))
+      orderBy(
+        themes.map(theme => ({
+          external_theme_id: theme.id,
+          external_theme_name: theme.name,
+          shop: shopId,
+          role: theme.role
+        })),
+        'role',
+        ['desc']
+      )
     )
 
 export {

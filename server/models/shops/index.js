@@ -34,7 +34,7 @@ const getById = (id = required('id')) =>
       _id: id
     },
     customErrorMessage,
-    populate: ['social_accounts']
+    populate: ['themes']
   })
 
 const getByExternalIdAndPlatform = ({ externalId, platform }) =>

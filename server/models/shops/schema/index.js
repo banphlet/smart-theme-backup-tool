@@ -90,4 +90,10 @@ const schema = new mongoose.Schema(
   }
 )
 
+schema.virtual('themes', {
+  ref: 'Theme',
+  foreignField: 'shop',
+  localField: '_id'
+})
+
 export default schema
