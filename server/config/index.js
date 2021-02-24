@@ -1,9 +1,14 @@
+require('dotenv').config()
 import convict from 'convict'
-
 import isNil from 'lodash/isNil'
 convict.addFormat(require('convict-format-with-validator').email)
 
 const config = convict({
+  PORT: {
+    doc: 'port',
+    format: 'port',
+    default: process.env.PORT
+  },
   env: {
     doc: 'The application environment.',
     format: ['production', 'development', 'test'],

@@ -1,6 +1,5 @@
 'use strict'
 import geopIp from 'geoip-lite'
-import requestIp from 'request-ip'
 
 const getIp = req => {
   var ip =
@@ -16,11 +15,12 @@ const getIp = req => {
   return ip
 }
 
-export default function attachLocation(req, res) {
+export default function attachLocation (req, res, next) {
   const ip = getIp(req)
   const geoInfo = geopIp.lookup(ip)
   const mergedUserAgent = { ip, ...geoInfo, ...req.useragent }
   req.useragent = mergedUserAgent
   geoInfo.ip = ip
   req.location = geoInfo
+  next()
 }
