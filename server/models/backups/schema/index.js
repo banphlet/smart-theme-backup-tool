@@ -22,6 +22,10 @@ const schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Theme',
       required: true
+    },
+    is_syncing: {
+      type: Boolean,
+      default: true
     }
   },
   {

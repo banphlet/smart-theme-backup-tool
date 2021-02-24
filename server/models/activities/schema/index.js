@@ -21,15 +21,22 @@ const schema = new mongoose.Schema(
       ref: 'Theme',
       required: true
     },
-    asset_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Asset',
-      required: true
+    assets: {
+      type: [
+        {
+          asset_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Asset'
+          },
+          type: {
+            type: String,
+            enum: Object.values(ActivityTypes)
+          }
+        }
+      ]
     },
-    type: {
-      type: String,
-      enum: Object.values(ActivityTypes)
-    }
+    action: String,
+    is_subscribed: Boolean
   },
   {
     timestamps: {

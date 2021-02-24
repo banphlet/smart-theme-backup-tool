@@ -110,6 +110,32 @@ const paginateByShopId = ({ shopId, page, limit = 20, sort, isBlocked }) => {
   )
 }
 
+const upsertBaseOn24HourRange = ({
+  shopId = required('shopId'),
+  themeId = required('themeId'),
+  syncType = required('theme')
+}) =>
+  ActivityModal.upsert({
+    query: {
+      created_at: {
+        $lte: moment()
+          .endOf('day')
+          .toDate(),
+        $gte: moment()
+          .startOf('day')
+          .toDate()
+      },
+      shop: shopId,
+      theme_id: themeId,
+      type: syncType
+    },
+    update: {
+      shop: shopId,
+      theme_id: themeId,
+      type: syncType
+    }
+  })
+
 export default () => ({
   ...ActivityModal,
   createOrUpdate,
@@ -119,5 +145,6 @@ export default () => ({
   updateById,
   fetchByShopId,
   getBasedOnCriteria,
-  paginateByShopId
+  paginateByShopId,
+  upsertBaseOn24HourRange
 })

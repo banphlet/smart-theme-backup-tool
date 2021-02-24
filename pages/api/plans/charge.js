@@ -4,10 +4,11 @@ import respond from '../../../server/request-handler/respond'
 import planService from '../../../server/services/plan'
 
 const createCharge = (req, res) =>
-    planService().createCharge(req.body?.shop_id)
-        .then(respond({ res, req }))
+  planService()
+    .createCharge(req.body)
+    .then(respond({ res, req }))
 
 export default customServerHandler({
-    handler: createCharge,
-    method: 'POST'
+  handler: createCharge,
+  method: 'POST'
 })

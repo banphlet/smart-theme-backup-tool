@@ -21,7 +21,14 @@ const schema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    role: String
+    role: String,
+    external_payment_id: String,
+    payment_price: Number,
+    payment_name: String,
+    schedule_time: {
+      type: Number,
+      default: 12
+    }
   },
   {
     timestamps: {

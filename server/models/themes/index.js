@@ -34,7 +34,8 @@ const getById = (id = required('id')) =>
     query: {
       _id: id
     },
-    customErrorMessage
+    customErrorMessage,
+    populate: ['shop']
   })
 
 const updateById = (id, update) =>

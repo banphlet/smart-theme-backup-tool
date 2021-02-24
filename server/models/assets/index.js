@@ -4,6 +4,7 @@ import schema from './schema'
 import BaseModel from '../common/base-model'
 import { required } from '../../lib/utils'
 import { compact } from 'lodash'
+import moment from 'moment'
 
 const Model = mongoose.models.Asset || mongoose.model('Asset', schema)
 const AssetModal = BaseModel(Model)
@@ -81,6 +82,37 @@ const createOrUpdate = ({
     }
   })
 
+const upsertBasedOn24HourPeriod = ({
+  shopId,
+  backupId,
+  key,
+  syncType,
+  ...rest
+}) =>
+  AssetModal.upsert({
+    query: {
+      created_at: {
+        $lte: moment()
+          .endOf('day')
+          .toDate(),
+        $gte: moment()
+          .startOf('day')
+          .toDate()
+      },
+      shop: shopId,
+      back_up_id: backupId,
+      key,
+      sync_type: syncType
+    },
+    update: {
+      shop: shopId,
+      back_up_id: backupId,
+      key,
+      sync_type: syncType,
+      ...rest
+    }
+  })
+
 export default () => ({
   ...AssetModal,
   createOrUpdate,
@@ -89,5 +121,6 @@ export default () => ({
   getById,
   updateById,
   fetchByShopId,
-  getBasedOnCriteria
+  getBasedOnCriteria,
+  upsertBasedOn24HourPeriod
 })

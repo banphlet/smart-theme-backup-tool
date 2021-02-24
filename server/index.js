@@ -8,17 +8,19 @@ import attachLocation from './request-handler/middlewares/attach-location'
 import Agendash from 'agendash'
 
 import { connect } from './lib/db'
-import agenda from './lib/agenda'
+import agenda, { agendaPreSet } from './lib/agenda'
 
 const dev = config.get('env') !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
-const PORT = config.get('PORT') || 8000
+const PORT = config.get('PORT')
+
+connect()
+agendaPreSet()
 
 app.prepare().then(() => {
   const server = express()
-  connect()
   server
     .use(pino())
     .use(userAgent.express())

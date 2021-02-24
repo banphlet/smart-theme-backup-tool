@@ -1,9 +1,10 @@
 'use strict'
 import mongoose from 'mongoose'
+import { compact } from 'lodash'
+import moment from 'moment'
 import schema from './schema'
 import BaseModel from '../common/base-model'
 import { required } from '../../lib/utils'
-import { compact } from 'lodash'
 
 const Model = mongoose.models.Backup || mongoose.model('Backup', schema)
 const BackupModal = BaseModel(Model)
@@ -51,14 +52,6 @@ const fetchByShopId = shopId =>
       shop: shopId
     },
     select: '-access_token'
-  })
-
-const getBasedOnCriteria = ({ shopId = required('shopId'), field, value }) =>
-  BackupModal.get({
-    query: {
-      shop: shopId,
-      [field]: value
-    }
   })
 
 const createOrUpdate = ({
@@ -109,15 +102,58 @@ const paginateByShopId = ({ shopId, page, limit = 20, sort, isBlocked }) => {
     }
   )
 }
+const upsertBaseOn24HourRange = ({
+  shopId = required('shopId'),
+  themeId = required('themeId'),
+  syncType = required('theme')
+}) =>
+  BackupModal.upsert({
+    query: {
+      created_at: {
+        $lte: moment()
+          .endOf('day')
+          .toDate(),
+        $gte: moment()
+          .startOf('day')
+          .toDate()
+      },
+      shop: shopId,
+      theme_id: themeId,
+      type: syncType
+    },
+    update: {
+      shop: shopId,
+      theme_id: themeId,
+      type: syncType
+    }
+  })
+
+const fetchByPrevious24HourRange = ({ shopId, themeId }) =>
+  BackupModal.fetch({
+    query: {
+      created_at: {
+        $lte: moment()
+          .add(1, 'days')
+          .endOf('day')
+          .toDate(),
+        $gte: moment()
+          .add(1, 'days')
+          .startOf('day')
+          .toDate()
+      },
+      shop: shopId,
+      theme_id: themeId
+    }
+  })
 
 export default () => ({
   ...BackupModal,
+  fetchByPrevious24HourRange,
   createOrUpdate,
   create,
   getByEmail,
   getById,
   updateById,
   fetchByShopId,
-  getBasedOnCriteria,
   paginateByShopId
 })

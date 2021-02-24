@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button, Card, EmptyState, List } from '@shopify/polaris'
 import { AppProvider, Frame } from '@shopify/polaris'
 import enTranslations from '@shopify/polaris/locales/en.json'
 import { Provider, useAppBridge } from '@shopify/app-bridge-react'
@@ -8,24 +7,10 @@ import NoSubscribedChanges from '../Components/NosubscribedThemes'
 const Main = ({ shop }) => {
   const app = useAppBridge()
 
-  console.log(shop)
-
-  // const showPlan = () => {
-  //   const saveButton = Button.create(app, {
-  //     label: shop.plan?.name,
-  //     style: Button.Style.Danger
-  //   })
-  //   TitleBar.create(app, {
-  //     buttons: {
-  //       secondary: [saveButton]
-  //     }
-  //   })
-  // }
-
   return (
     <Frame>
       <div style={{ padding: 5 }}>
-        <NoSubscribedChanges themes={shop.themes} />
+        <NoSubscribedChanges shop={shop} />
       </div>
     </Frame>
   )

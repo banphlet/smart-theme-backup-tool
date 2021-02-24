@@ -1,7 +1,7 @@
 import { Card, EmptyState } from '@shopify/polaris'
 import SubscribeThemes from '../SubscribeThemes'
 
-const NoSubscribedChanges = ({ themes = [] }) => (
+const NoSubscribedChanges = ({ shop }) => (
   <EmptyState
     heading='No Themes subscribed '
     footerContent={
@@ -16,7 +16,7 @@ const NoSubscribedChanges = ({ themes = [] }) => (
     <p style={{ marginBottom: 10 }}>
       Track and receive your incoming inventory from suppliers.
     </p>
-    <SubscribeThemes themes={themes} />
+    <SubscribeThemes shop={shop} />
   </EmptyState>
 )
 

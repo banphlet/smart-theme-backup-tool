@@ -94,15 +94,18 @@ const installWebhooks = ({
 const createCharge = ({
   accessToken = required('accessToken'),
   platformDomain = required('platformDomain'),
-  shopId = required('shopId')
+  shopId = required('shopId'),
+  planName = required('planName'),
+  price = required('price'),
+  themeId = required('themeId')
 }) =>
   shopifyClient({ shop: platformDomain, accessToken })
     .recurringApplicationCharge.create({
-      name: 'Pro Plan',
-      price: '2.99',
+      name: planName,
+      price: price,
       return_url: `${config.get(
         'NEXT_PUBLIC_APP_URL'
-      )}/api/plans/callback?shop_id=${shopId}`,
+      )}/api/plans/callback?shop_id=${shopId}&theme_id=${themeId}`,
       test: config.get('IS_TEST_CHARGE')
     })
     .then(response => response.confirmation_url)
@@ -142,7 +145,32 @@ const getThemes = ({
       )
     )
 
+const getAssets = ({
+  accessToken = required('accessToken'),
+  platformDomain = required('platformDomain'),
+  themeId = required('themeId')
+}) =>
+  shopifyClient({
+    shop: platformDomain,
+    accessToken
+  }).asset.list(themeId)
+
+const getAsset = ({
+  accessToken = required('accessToken'),
+  platformDomain = required('platformDomain'),
+  themeId = required('themeId'),
+  assetKey = required('assetKey')
+}) =>
+  shopifyClient({
+    shop: platformDomain,
+    accessToken
+  }).asset.get(themeId, {
+    'asset[key]': assetKey
+  })
+
 export {
+  getAsset,
+  getAssets,
   getThemes,
   getPermissionUrl,
   getOauthAccessTokens,

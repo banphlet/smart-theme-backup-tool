@@ -1,6 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
+import { BackUpTypes } from '../../backups/schema'
 
 const schema = new mongoose.Schema(
   {
@@ -14,10 +15,6 @@ const schema = new mongoose.Schema(
       ref: 'Backup',
       required: true
     },
-    external_id: {
-      type: String,
-      required: true
-    },
     key: {
       type: String,
       required: true
@@ -25,6 +22,11 @@ const schema = new mongoose.Schema(
     value: {
       type: String,
       required: true
+    },
+    content_type: String,
+    sync_type: {
+      type: String,
+      enum: Object.values(BackUpTypes)
     }
   },
   {
