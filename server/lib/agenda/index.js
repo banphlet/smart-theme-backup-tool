@@ -53,8 +53,8 @@ const addJob = async ({
   await agenda.start()
   await job
     .repeatEvery(
-      '*/5 * * * *'
-      // `0 0 ${theme?.schedule_time} * * ?`
+      // '*/2 * * * *'
+      `0 0 ${theme?.schedule_time} * * ?`
     )
     .unique({ 'data.themeId': theme.id })
     .save()

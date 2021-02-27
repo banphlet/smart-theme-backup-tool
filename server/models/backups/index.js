@@ -128,28 +128,27 @@ const upsertBaseOn24HourRange = ({
     }
   })
 
-const fetchByPrevious24HourRange = ({ shopId, themeId }) =>
+const fetchPreviousBackUp = ({ shopId, themeId }) =>
   BackupModal.fetch({
     query: {
       created_at: {
         $lte: moment()
-          .add(1, 'days')
+          .subtract(1, 'days')
           .endOf('day')
-          .toDate(),
-        $gte: moment()
-          .add(1, 'days')
-          .startOf('day')
           .toDate()
       },
       shop: shopId,
       theme_id: themeId
-    }
+    },
+    limit: 1,
+    sort: { _id: -1 },
+    populate: ['assets']
   })
 
 export default () => ({
   ...BackupModal,
   upsertBaseOn24HourRange,
-  fetchByPrevious24HourRange,
+  fetchPreviousBackUp,
   createOrUpdate,
   create,
   getByEmail,

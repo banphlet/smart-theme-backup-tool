@@ -1,7 +1,11 @@
 'use strict'
 'use strict'
 import { validate } from '../../../lib/utils'
-import { themes as themeModel, shops as shopModel } from '../../../models'
+import {
+  themes as themeModel,
+  shops as shopModel,
+  activityModel
+} from '../../../models'
 import platforms from '../../platforms'
 import joi, { objectId } from '../../../lib/joi'
 import config from '../../../config'
@@ -35,6 +39,12 @@ export default async function upgrade (payload) {
     theme: updatedTheme,
     handlerName: 'syncTheme',
     syncType: BackUpTypes.AUTOMATIC
+  })
+
+  activityModel().create({
+    shop: updatedTheme.shop.id,
+    theme_id: updatedTheme.id,
+    action: 'Subscribed'
   })
 
   return {

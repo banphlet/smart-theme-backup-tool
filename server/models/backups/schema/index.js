@@ -44,4 +44,10 @@ const schema = new mongoose.Schema(
   }
 )
 
+schema.virtual('assets', {
+  ref: 'Asset',
+  foreignField: 'back_up_id',
+  localField: '_id'
+})
+
 export default schema

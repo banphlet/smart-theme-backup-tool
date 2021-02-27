@@ -27,7 +27,9 @@ const schema = new mongoose.Schema(
     sync_type: {
       type: String,
       enum: Object.values(BackUpTypes)
-    }
+    },
+    external_created_at: Date,
+    external_updated_at: Date
   },
   {
     timestamps: {

@@ -47,7 +47,11 @@ const updateOne = Model => async ({
   populate,
   options = {}
 }) => {
-  const opts = Object.assign({}, { new: true, runValidators: true, upsert: true }, options)
+  const opts = Object.assign(
+    {},
+    { new: true, runValidators: true, upsert: true },
+    options
+  )
 
   let doc = await Model.findOneAndUpdate(query, update, opts)
     .populate(populate)
@@ -64,12 +68,16 @@ const upsert = Model => async ({ query, update, populate }) => {
 const fetch = Model => async ({
   query = required('query'),
   populate,
-  select
+  select,
+  limit,
+  sort
 }) => {
   const doc = Model.find(query, select)
 
   return doc
     .batchSize(200)
+    .limit(limit)
+    .sort(sort)
     .populate(populate)
     .exec()
 }
