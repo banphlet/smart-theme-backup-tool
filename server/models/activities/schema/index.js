@@ -1,6 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 export const ActivityTypes = {
   ADDED: 'added',
@@ -8,6 +9,23 @@ export const ActivityTypes = {
   SUBSCRIBED: 'subscribed',
   DELETED: 'deleted'
 }
+
+const assetType = new mongoose.Schema({
+  current_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Asset',
+    alias: 'current_asset'
+  },
+  previous_asset_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Asset',
+    alias: 'previous_asset'
+  },
+  type: {
+    type: String,
+    enum: Object.values(ActivityTypes)
+  }
+})
 
 const schema = new mongoose.Schema(
   {
@@ -22,18 +40,7 @@ const schema = new mongoose.Schema(
       required: true
     },
     assets: {
-      type: [
-        {
-          asset_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Asset'
-          },
-          type: {
-            type: String,
-            enum: Object.values(ActivityTypes)
-          }
-        }
-      ]
+      type: [assetType]
     },
     action: String,
     is_subscribed: Boolean
@@ -53,5 +60,7 @@ const schema = new mongoose.Schema(
     }
   }
 )
+
+schema.plugin(aggregatePaginate)
 
 export default schema

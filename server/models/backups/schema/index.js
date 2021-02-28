@@ -1,6 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2'
 
 export const BackUpTypes = {
   MANUAL: 'manual',
@@ -49,5 +50,7 @@ schema.virtual('assets', {
   foreignField: 'back_up_id',
   localField: '_id'
 })
+
+schema.plugin(aggregatePaginate)
 
 export default schema

@@ -82,33 +82,17 @@ const createOrUpdate = ({
     }
   })
 
-const paginateByShopId = ({ shopId, page, limit = 20, sort, isBlocked }) => {
-  const aggregate = Model.aggregate([
-    {
-      $match: {
-        shop: new mongoose.Types.ObjectId(shopId),
-        ...(isBlocked && {
-          is_blocked: isBlocked
-        })
-      }
-    }
-  ])
-  const options = {
+const paginateByShopId = ({ shopId, themeId, limit = 20, sort, cursor }) => {
+  return ActivityModal.paginate({
+    query: {
+      shop: shopId,
+      theme_id: themeId
+    },
+    after: cursor,
+    sort,
     limit,
-    sort: sort ?? { _id: -1 },
-    page
-  }
-  return Model.aggregatePaginate(aggregate, options).then(
-    ({ docs, ...rest }) => {
-      return {
-        docs: docs.map(doc => {
-          doc.id = doc._id
-          return doc
-        }),
-        ...rest
-      }
-    }
-  )
+    populate: ['assets.current_id', 'assets.previous_asset_id']
+  })
 }
 
 export default () => ({

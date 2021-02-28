@@ -46,7 +46,8 @@ const updateActivity = async ({ theme, syncType, currentBackups }) => {
     item => item.key
   ).map(asset => ({
     type: ActivityTypes.DELETED,
-    asset_id: asset.id
+    current_id: asset.id,
+    previous_asset_id: backUpAssets.find(ass => ass.key === asset.key)?.id
   }))
 
   const addedOrModified = assetDifference.map(asset => {
@@ -55,7 +56,8 @@ const updateActivity = async ({ theme, syncType, currentBackups }) => {
     )
     return {
       type: wasCreatedToday ? ActivityTypes.ADDED : ActivityTypes.UPDATED,
-      asset_id: asset.id
+      current_id: asset.id,
+      previous_asset_id: backUpAssets.find(ass => ass.key === asset.key)?.id
     }
   })
 
@@ -104,5 +106,5 @@ export default async function syncTheme (data) {
     is_syncing: false
   })
   await updateActivity({ theme, syncType: data.syncType, currentBackups })
-  logger.info('===================>done syncing', data)
+  console.info('===================>done syncing', data)
 }

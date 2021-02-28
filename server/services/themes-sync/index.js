@@ -1,5 +1,5 @@
 'use strict'
 
 import syncTheme from './sync-theme'
-
-export default () => ({ syncTheme })
+import * as fetchBackups from './backups-activity'
+export default () => ({ syncTheme, ...fetchBackups })

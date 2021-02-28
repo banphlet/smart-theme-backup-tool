@@ -74,14 +74,26 @@ const createOrUpdate = ({
     }
   })
 
-const paginateByShopId = ({ shopId, page, limit = 20, sort, isBlocked }) => {
+const paginateByShopIdAndThemeId = ({
+  shopId,
+  page,
+  limit = 20,
+  sort,
+  themeId
+}) => {
   const aggregate = Model.aggregate([
     {
       $match: {
         shop: new mongoose.Types.ObjectId(shopId),
-        ...(isBlocked && {
-          is_blocked: isBlocked
-        })
+        theme_id: new mongoose.Types.ObjectId(themeId)
+      }
+    },
+    {
+      $lookup: {
+        from: 'assets',
+        localField: '_id',
+        foreignField: 'back_up_id',
+        as: 'assets'
       }
     }
   ])
@@ -155,5 +167,5 @@ export default () => ({
   getById,
   updateById,
   fetchByShopId,
-  paginateByShopId
+  paginateByShopIdAndThemeId
 })
