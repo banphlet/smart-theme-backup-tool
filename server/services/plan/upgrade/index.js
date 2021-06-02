@@ -1,5 +1,5 @@
 'use strict'
-'use strict'
+
 import { validate } from '../../../lib/utils'
 import {
   themes as themeModel,
